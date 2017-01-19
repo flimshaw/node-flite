@@ -27,13 +27,13 @@ function init(config, cb) {
 
 function detectFeatures(cb) {
   var usage = /usage/i;
-  child.exec('flite --version', function (err, stdout) {
+  child.exec('~/.heroku/vendor/bin/flite --version', function (err, stdout) {
     dep.flite = /flite-1\.4/.test(stdout);
     if (!dep.flite) {
       dep.init = true;
       return cb(new Error('required binary flite not available'));
     }
-    child.exec('flite -lv', function (err, stdout) {
+    child.exec('~/.heroku/vendor/bin/flite -lv', function (err, stdout) {
       dep.voices = stdout.trim().split(' ').slice(2);
       child.exec('aplay --help', function (err, stdout, stderr) {
         dep.aplay = usage.test(stderr) || usage.test(stdout);
@@ -94,7 +94,7 @@ function play(file, cb) {
 }
 
 function tmp(cb) {
-  temp.open('flite-tmp', function (err, file) {
+  temp.open('~/.heroku/vendor/bin/flite-tmp', function (err, file) {
     if (err) return cb(err);
     fs.close(file.fd, function (err) {
       if (err) return cb(err);
@@ -108,7 +108,7 @@ function config(cfg) {
 }
 
 function cmd(also) {
-  var cmdStr = 'flite ';
+  var cmdStr = '~/.heroku/vendor/bin/flite ';
   if (this.config.voice && this.voices.indexOf(this.config.voice) > -1) {
     cmdStr += '-voice ' + this.config.voice + ' ';
   }
